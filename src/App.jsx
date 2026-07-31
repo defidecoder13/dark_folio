@@ -281,7 +281,7 @@ export default function App() {
           >
             <div className="relative w-full max-w-md aspect-[4/5] flex items-center justify-center">
               <img
-                src="/src/assets/profile-nobg.png"
+                src="/profile-nobg.png"
                 alt="Subham Santra"
                 className="w-full h-full object-contain brightness-105"
                 style={{
