@@ -17,6 +17,7 @@ import {
   SiGit,
   SiJavascript
 } from 'react-icons/si';
+import { Sparkles, Brain, Cpu } from 'lucide-react';
 
 const skillCategories = [
   {
@@ -51,8 +52,9 @@ const skillCategories = [
         name: 'Google Gemini', 
         color: '#8E75FF', 
         svg: (
+          /* Official Google Gemini Star Sparkle */
           <svg className="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12z" />
+            <path d="M11.5 0C11.5 6.351 6.351 11.5 0 11.5C6.351 11.5 11.5 16.649 11.5 23C11.5 16.649 16.649 11.5 23 11.5C16.649 11.5 11.5 6.351 11.5 0Z" />
           </svg>
         ) 
       },
@@ -60,8 +62,9 @@ const skillCategories = [
         name: 'Claude AI', 
         color: '#D97706', 
         svg: (
+          /* Official Anthropic Claude Asterisk / Starburst */
           <svg className="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L4.5 20.5h3.2l1.5-3.8h5.6l1.5 3.8h3.2L12 2zm-1.8 11.8L12 8.4l1.8 5.4h-3.6z"/>
+            <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" />
           </svg>
         )
       },
@@ -69,6 +72,7 @@ const skillCategories = [
         name: 'OpenAI / Codex', 
         color: '#10A37F', 
         svg: (
+          /* Official OpenAI Pinwheel Logo */
           <svg className="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="currentColor">
             <path d="M22.28 9.38a6.04 6.04 0 0 0-.52-4.86 6.09 6.09 0 0 0-6.42-3 6.06 6.06 0 0 0-4.66-2.08 6.09 6.09 0 0 0-5.83 4.29 6.04 6.04 0 0 0-4.14 3 6.09 6.09 0 0 0 .59 7.07 6.04 6.04 0 0 0 .52 4.86 6.09 6.09 0 0 0 6.42 3 6.06 6.06 0 0 0 4.66 2.08 6.09 6.09 0 0 0 5.83-4.29 6.04 6.04 0 0 0 4.14-3 6.09 6.09 0 0 0-.59-7.07zm-9.78 12.28a4.42 4.42 0 0 1-2.92-1.1l.15-.08 3.5-2.02a.84.84 0 0 0 .42-.73v-4.94l1.48.85v4.06a4.44 4.44 0 0 1-2.63 3.96zm-7.9-3.77a4.42 4.42 0 0 1-.51-3.08l.15.09 3.5 2.02a.84.84 0 0 0 .84 0l4.28-2.47v1.7l-3.51 2.03a4.44 4.44 0 0 1-4.75-.29zm-1.1-8.52a4.42 4.42 0 0 1 2.4-1.98v.17l0 4.04a.84.84 0 0 0 .42.73l4.28 2.47-1.48.85-3.5-2.02a4.44 4.44 0 0 1-2.12-4.26zm14.28 3.65l-4.28-2.47 1.48-.85 3.5 2.02a4.44 4.44 0 0 1 2.12 4.26 4.42 4.42 0 0 1-2.4 1.98v-.17l0-4.04a.84.84 0 0 0-.42-.73zm1.61-4.75l-.15-.09-3.5-2.02a.84.84 0 0 0-.84 0l-4.28 2.47v-1.7l3.51-2.03a4.44 4.44 0 0 1 5.26 3.37zm-11.02-4.8a4.44 4.44 0 0 1 4.1.37l-.15.08-3.5 2.02a.84.84 0 0 0-.42.73v4.94l-1.48-.85v-4.06a4.44 4.44 0 0 1 1.45-3.23z"/>
           </svg>
@@ -77,32 +81,17 @@ const skillCategories = [
       { 
         name: 'Antigravity AI', 
         color: '#6366F1', 
-        svg: (
-          <svg className="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
-          </svg>
-        ) 
+        Icon: Sparkles
       },
       { 
         name: 'Kimi AI', 
         color: '#EC4899', 
-        svg: (
-          <svg className="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 14.5l-4-4 1.41-1.41L11 13.67l6.59-6.59L19 8.5l-8 8z"/>
-          </svg>
-        )
+        Icon: Brain
       },
       { 
         name: 'GLM / Zhipu', 
         color: '#3B82F6', 
-        svg: (
-          <svg className="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-            <rect x="4" y="4" width="16" height="16" rx="4" />
-            <path d="M9 9h6v6H9z" fill="currentColor"/>
-          </svg>
-        ) 
+        Icon: Cpu
       }
     ]
   }
