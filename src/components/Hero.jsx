@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowDownRight, Terminal, Cpu, Zap, Globe } from 'lucide-react';
+import TextReveal from './TextReveal';
 
 export default function Hero() {
   return (
@@ -21,16 +22,15 @@ export default function Hero() {
           <span>Architecting High-Scale Digital Experiences</span>
         </motion.div>
 
-        {/* Main Dramatic Headline */}
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-4xl sm:text-6xl font-display font-extrabold text-white tracking-tight leading-[1.1] mb-6"
-        >
-          Crafting web products with <br className="hidden sm:inline" />
-          <span className="text-gradient-accent">precision engineering</span> & <span className="underline decoration-indigo-500/50 underline-offset-8">cinematic aesthetics</span>.
-        </motion.h1>
+        {/* Main Dramatic Headline with Staggered Mask Reveal */}
+        <div className="mb-6">
+          <TextReveal
+            text="Crafting web products with precision engineering & cinematic aesthetics."
+            as="h1"
+            className="text-4xl sm:text-6xl font-display font-extrabold text-white tracking-tight leading-[1.1]"
+            staggerDelay={0.05}
+          />
+        </div>
 
         {/* Bio Paragraph */}
         <motion.p 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Matter from 'matter-js';
 import { RefreshCw, Play, Pause } from 'lucide-react';
+import TextReveal from './TextReveal';
 
 const skillsList = [
   { name: 'React 18', category: 'FRONTEND', color: '#61DAFB' },
@@ -181,9 +182,12 @@ export default function GravitySkillsCanvas() {
             <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase">03 — SKILLS & TOOLING</span>
             <div className="h-[1px] w-16 bg-neutral-800"></div>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white">
-            Gravity <span className="text-neutral-500 font-normal">Physics Drop.</span>
-          </h2>
+          <TextReveal
+            text="Gravity Physics Drop."
+            as="h2"
+            className="text-3xl sm:text-5xl font-bold tracking-tight text-white"
+            staggerDelay={0.05}
+          />
         </div>
 
         {/* Physics Controls */}

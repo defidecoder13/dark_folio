@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Layers, Sparkles, X, ChevronRight } from 'lucide-react';
+import TextReveal from './TextReveal';
 
 const projects = [
   {
@@ -48,9 +49,12 @@ export default function Projects() {
     <section id="projects" className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
-            Featured Works & Case Studies
-          </h2>
+          <TextReveal
+            text="Featured Works & Case Studies"
+            as="h2"
+            className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight"
+            staggerDelay={0.04}
+          />
           <p className="text-sm text-slate-400 mt-1">High impact applications built with scalable architectures</p>
         </div>
       </div>

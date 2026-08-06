@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, Calendar, CheckCircle2 } from 'lucide-react';
+import TextReveal from './TextReveal';
 
 const experiences = [
   {
@@ -38,9 +39,12 @@ export default function Experience() {
   return (
     <section id="experience" className="space-y-6">
       <div>
-        <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
-          Professional Journey
-        </h2>
+        <TextReveal
+          text="Professional Journey"
+          as="h2"
+          className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight"
+          staggerDelay={0.04}
+        />
         <p className="text-sm text-slate-400 mt-1">Impact delivered at scale</p>
       </div>
 

@@ -101,7 +101,7 @@ export default function ElegantSkillsGrid() {
   return (
     <section id="skills" className="space-y-12 pt-8 scroll-mt-28">
       {/* Section Label */}
-      <div className="flex items-center gap-4 border-b border-neutral-900 pb-6">
+      <div className="section-header flex items-center gap-4 border-b border-neutral-900 pb-6">
         <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase">04 — SKILLS & TOOLING</span>
         <div className="h-[1px] w-16 bg-neutral-800"></div>
       </div>

@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Lenis from 'lenis';
 import { motion, AnimatePresence } from 'framer-motion';
 import CommandPalette from './components/CommandPalette';
 import ElegantSkillsGrid from './components/ElegantSkillsGrid';
 import Preloader from './components/Preloader';
 import KineticHeading from './components/KineticHeading';
+import ParticleAvatar from './components/ParticleAvatar';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 import {
   ArrowUpRight,
   Terminal,
@@ -97,7 +104,7 @@ export default function App() {
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, keywordIndex]);
 
-  // Lenis Smooth Scroll
+  // Lenis Smooth Scroll integrated with GSAP ScrollTrigger
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -105,19 +112,205 @@ export default function App() {
       smoothWheel: true,
     });
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
+    lenis.on('scroll', ScrollTrigger.update);
 
-    return () => lenis.destroy();
+    const updateLenis = (time) => {
+      lenis.raf(time * 1000);
+    };
+    
+    gsap.ticker.add(updateLenis);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(updateLenis);
+    };
   }, []);
 
   const [isLoading, setIsLoading] = useState(true);
+  const containerRef = useRef(null);
+
+  useGSAP((context) => {
+    if (isLoading) return;
+
+    const timer = setTimeout(() => {
+      context.add(() => {
+        // 1. Hero Animations (Initial Entry)
+    const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    
+    heroTl.from(".hero-loc", {
+      opacity: 0,
+      y: 20,
+      duration: 1,
+      delay: 0.2
+    });
+    
+    heroTl.from(".hero-title-line", {
+      opacity: 0,
+      y: 55,
+      rotationX: 10,
+      stagger: 0.15,
+      duration: 1.2,
+    }, "-=0.8");
+
+    heroTl.from(".hero-desc", {
+      opacity: 0,
+      y: 30,
+      duration: 1,
+    }, "-=0.9");
+
+    heroTl.from(".hero-social-btn", {
+      opacity: 0,
+      scale: 0.8,
+      y: 20,
+      stagger: 0.08,
+      duration: 0.8,
+    }, "-=0.8");
+
+    heroTl.from(".hero-avatar", {
+      opacity: 0,
+      scale: 0.95,
+      duration: 1.5,
+    }, "-=1.2");
+
+    heroTl.from(".hero-scroll-btn", {
+      opacity: 0,
+      y: -10,
+      yoyo: true,
+      repeat: -1,
+      duration: 1,
+    }, "-=0.5");
+    // 4. Section Headers Reveal Animations (Dynamic ScrollTrigger for all section headers)
+    const sections = ["#about", "#experience", "#education", "#work", "#skills", "#contact"];
+    sections.forEach((secId) => {
+      const secHeader = document.querySelector(`${secId} .section-header`);
+      if (secHeader) {
+        gsap.from(secHeader, {
+          opacity: 0,
+          x: -40,
+          duration: 0.8,
+          scrollTrigger: {
+            trigger: secId,
+            start: "top 85%",
+            toggleActions: "play none none reverse"
+          }
+        });
+      }
+    });
+
+    // 3. About Section Parallax & Content Slide-up
+    gsap.from(".about-heading", {
+      opacity: 0,
+      y: 60,
+      duration: 1,
+      scrollTrigger: {
+        trigger: "#about",
+        start: "top 75%",
+      }
+    });
+
+    gsap.from(".about-body p", {
+      opacity: 0,
+      y: 30,
+      stagger: 0.2,
+      duration: 0.8,
+      scrollTrigger: {
+        trigger: "#about",
+        start: "top 70%",
+      }
+    });
+
+    gsap.from(".about-resume-btn", {
+      opacity: 0,
+      scale: 0.9,
+      duration: 0.8,
+      scrollTrigger: {
+        trigger: "#about",
+        start: "top 65%",
+      }
+    });
+
+    // 4. Experience Section Timeline Vertical Line and Staggered Entries
+    gsap.to(".experience-line-fill", {
+      height: "100%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".experience-timeline-container",
+        start: "top 70%",
+        end: "bottom 70%",
+        scrub: true
+      }
+    });
+
+    gsap.from(".experience-card", {
+      opacity: 0,
+      x: -40,
+      stagger: 0.3,
+      duration: 0.8,
+      scrollTrigger: {
+        trigger: "#experience",
+        start: "top 65%",
+      }
+    });
+
+    // 5. Education Cards Sequential Reveals
+    gsap.from(".education-card", {
+      opacity: 0,
+      y: 40,
+      stagger: 0.25,
+      duration: 0.8,
+      scrollTrigger: {
+        trigger: ".education-card",
+        start: "top 85%",
+      }
+    });
+
+    // 6. Selected Work / Projects Staggered Reveals & Vertical Fill
+    gsap.to(".work-line-fill", {
+      height: "100%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".work-timeline-container",
+        start: "top 70%",
+        end: "bottom 70%",
+        scrub: true
+      }
+    });
+
+    gsap.from(".project-card", {
+      opacity: 0,
+      x: -50,
+      stagger: 0.3,
+      duration: 1,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#work",
+        start: "top 65%",
+      }
+    });
+
+    // 7. Footer Reveal Animation
+    gsap.from(".footer-reveal", {
+      opacity: 0,
+      y: 40,
+      duration: 1.2,
+      scrollTrigger: {
+        trigger: "#contact",
+        start: "top 80%",
+      }
+    });
+
+    // Recalculate ScrollTrigger start/end triggers now that loader is gone
+    ScrollTrigger.refresh();
+      });
+    }, 250);
+
+    return () => clearTimeout(timer);
+
+  }, { scope: containerRef, dependencies: [isLoading] });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-white selection:text-black">
+    <div ref={containerRef} className="min-h-screen bg-[#050505] text-white font-sans selection:bg-white selection:text-black overflow-x-hidden">
 
       {/* Cinematic Dark Preloader Screen */}
       <AnimatePresence mode="wait">
@@ -133,32 +326,33 @@ export default function App() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="pointer-events-auto max-w-6xl w-full flex items-center justify-between px-5 py-3 rounded-full bg-neutral-900/80 backdrop-blur-xl border border-neutral-800/80 shadow-2xl shadow-black/80"
+          className="pointer-events-auto max-w-6xl w-full flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-neutral-900/85 backdrop-blur-xl border border-neutral-800/80 shadow-2xl shadow-black/80"
         >
-          {/* Clean Brand Text Only */}
-          <a href="#" className="flex items-center group">
-            <span className="font-mono text-xs tracking-widest text-white font-semibold uppercase group-hover:text-neutral-300 transition-colors">
-              {devState.name || 'SUBHAM SANTRA'}
+          {/* Responsive Brand Text Initials Collapse */}
+          <a href="#" className="flex items-center group pl-1">
+            <span className="font-mono text-[11px] sm:text-xs tracking-widest text-white font-semibold uppercase group-hover:text-neutral-300 transition-colors">
+              <span className="hidden sm:inline">{devState.name || 'Subham'}</span>
+              <span className="inline sm:hidden">S.S.</span>
             </span>
           </a>
 
           {/* Navigation Links + Cmd+K Trigger */}
-          <nav className="flex items-center gap-1 sm:gap-2 text-xs font-mono tracking-widest text-neutral-400">
+          <nav className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-mono tracking-widest text-neutral-400">
             <a
               href="#work"
-              className="px-3 py-1.5 rounded-full hover:text-white hover:bg-neutral-800/60 transition-all duration-200"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:text-white hover:bg-neutral-800/60 transition-all duration-200"
             >
               WORK
             </a>
             <a
               href="#experience"
-              className="px-3 py-1.5 rounded-full hover:text-white hover:bg-neutral-800/60 transition-all duration-200"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:text-white hover:bg-neutral-800/60 transition-all duration-200"
             >
               EXPERIENCE
             </a>
             <a
               href="#skills"
-              className="px-3 py-1.5 rounded-full hover:text-white hover:bg-neutral-800/60 transition-all duration-200 hidden sm:inline-block"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:text-white hover:bg-neutral-800/60 transition-all duration-200 hidden sm:inline-block"
             >
               SKILLS
             </a>
@@ -166,15 +360,15 @@ export default function App() {
             {/* Cmd + K Button Badge */}
             <button
               onClick={() => setIsCmdPaletteOpen(true)}
-              className="px-2.5 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-all flex items-center gap-1.5 text-[11px]"
+              className="px-2 sm:px-2.5 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-all flex items-center gap-1.5 text-[10px] sm:text-[11px]"
               title="Open Command Palette (Cmd + K)"
             >
-              <kbd className="font-mono text-[10px] text-neutral-400">⌘K</kbd>
+              <kbd className="font-mono text-[9px] sm:text-[10px] text-neutral-400">⌘K</kbd>
             </button>
 
             <a
               href="#contact"
-              className="ml-2 px-4 py-1.5 rounded-full bg-white text-black font-medium tracking-normal hover:bg-neutral-200 transition-all duration-200 shadow-md shadow-white/10"
+              className="ml-1 sm:ml-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-white text-black font-medium tracking-normal hover:bg-neutral-200 transition-all duration-200 shadow-md shadow-white/10 hidden sm:inline-block"
             >
               GET IN TOUCH
             </a>
@@ -182,58 +376,38 @@ export default function App() {
         </motion.div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 pt-36 pb-24 space-y-32">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-36 pb-16 sm:pb-24 space-y-20 sm:space-y-32 overflow-x-hidden">
 
         {/* HERO SECTION — Clean Headline with Keypad Typewriter Animation */}
         <section className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[75vh]">
           <div className="lg:col-span-7 space-y-6 pt-4">
             
             {/* Location & Dynamic Real-Time Clock Tag */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="flex items-center gap-2 text-xs font-mono text-neutral-400 tracking-wider"
-            >
+            <div className="hero-loc flex items-center gap-2 text-xs font-mono text-neutral-400 tracking-wider">
               <span className="text-sm">📍</span>
               <span>Based in Kolkata, WB <span className="text-neutral-500 font-normal">— {currentTime || 'LOCAL TIME'}</span> <span className="text-neutral-600">(UTC+5:30)</span></span>
-            </motion.div>
+            </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05]"
-            >
-              Hi, I'm {devState.name}, <br />
-              <span className="text-neutral-400 font-mono text-3xl sm:text-5xl font-normal underline decoration-neutral-700 underline-offset-8">
+            <h1 className="text-4xl sm:text-7xl font-bold tracking-tight leading-[1.05] overflow-hidden">
+              <span className="hero-title-line block">Hi, I'm {devState.name},</span>
+              <span className="hero-title-line block text-neutral-400 font-mono text-2xl sm:text-5xl font-normal underline decoration-neutral-700 underline-offset-8">
                 {displayText}
                 <span className="inline-block w-1 h-8 sm:h-12 bg-white ml-1 animate-pulse align-middle"></span>
               </span>
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-neutral-400 text-base sm:text-lg font-light max-w-xl leading-relaxed pt-2"
-            >
+            <p className="hero-desc text-neutral-400 text-base sm:text-lg font-light max-w-xl leading-relaxed pt-2">
               Specializing in micro-frontends, high-throughput architectures, PWA offline resilience, and modern design systems.
-            </motion.p>
+            </p>
 
-            {/* Social Media Links with Authentic Brand Colors on Hover */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center gap-4 pt-2"
-            >
+            {/* Social Media Links with Authentic Hover Highlights */}
+            <div className="flex items-center gap-4 pt-2">
               {/* GitHub */}
               <a
                 href="https://github.com"
                 target="_blank"
                 rel="noreferrer"
-                className="p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-500 hover:bg-neutral-800/80 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all duration-300 transform hover:-translate-y-1"
+                className="hero-social-btn p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-500 hover:bg-neutral-800/80 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all duration-300 transform hover:-translate-y-1"
                 title="GitHub"
               >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" /></svg>
@@ -244,7 +418,7 @@ export default function App() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noreferrer"
-                className="p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-[#0A66C2] hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/10 hover:shadow-[0_0_18px_rgba(10,102,194,0.35)] transition-all duration-300 transform hover:-translate-y-1"
+                className="hero-social-btn p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-[#0A66C2] hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/10 hover:shadow-[0_0_18px_rgba(10,102,194,0.35)] transition-all duration-300 transform hover:-translate-y-1"
                 title="LinkedIn"
               >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.77a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z" /></svg>
@@ -255,7 +429,7 @@ export default function App() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noreferrer"
-                className="p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-500 hover:bg-neutral-800/80 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all duration-300 transform hover:-translate-y-1"
+                className="hero-social-btn p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-500 hover:bg-neutral-800/80 hover:shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all duration-300 transform hover:-translate-y-1"
                 title="X / Twitter"
               >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
@@ -264,42 +438,22 @@ export default function App() {
               {/* Email */}
               <a
                 href="mailto:subham@example.com"
-                className="p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/10 hover:shadow-[0_0_18px_rgba(52,211,153,0.35)] transition-all duration-300 transform hover:-translate-y-1"
+                className="hero-social-btn p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/10 hover:shadow-[0_0_18px_rgba(52,211,153,0.35)] transition-all duration-300 transform hover:-translate-y-1"
                 title="Email"
               >
                 <Mail className="w-5 h-5" />
               </a>
-            </motion.div>
+            </div>
           </div>
 
           {/* Right Portrait Cutout Container */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-5 relative flex flex-col items-center gap-4"
-          >
+          <div className="hero-avatar lg:col-span-5 relative flex flex-col items-center gap-4">
             <div className="relative w-full max-w-md aspect-[4/5] flex items-center justify-center">
-              <img
-                src="/profile-nobg.png"
-                alt="Subham Santra"
-                className="w-full h-full object-contain brightness-105"
-                style={{
-                  maskImage: 'radial-gradient(ellipse 85% 85% at 50% 45%, black 40%, transparent 95%), linear-gradient(to bottom, black 65%, transparent 98%)',
-                  WebkitMaskImage: 'radial-gradient(ellipse 85% 85% at 50% 45%, black 40%, transparent 95%), linear-gradient(to bottom, black 65%, transparent 98%)',
-                  maskComposite: 'intersect',
-                  WebkitMaskComposite: 'source-in'
-                }}
-              />
+              <ParticleAvatar />
             </div>
 
             {/* Pure Raw Text Status (No Container / No Pill Shape) */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex items-center gap-2.5 pt-1"
-            >
+            <div className="flex items-center gap-2.5 pt-1">
               <span className="relative flex h-2 w-2">
                 {devState.availableForHire && (
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -309,16 +463,11 @@ export default function App() {
               <span className="text-xs font-mono tracking-widest text-neutral-400 uppercase font-medium">
                 {devState.availableForHire ? 'AVAILABLE FOR HIRE' : 'CURRENTLY BOOKED'}
               </span>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Animated Scroll Indicator at Bottom Center */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="lg:col-span-12 flex justify-center pt-8"
-          >
+          <div className="hero-scroll-btn lg:col-span-12 flex justify-center pt-8">
             <a 
               href="#about" 
               className="flex items-center gap-2 text-[11px] font-mono tracking-widest text-neutral-500 hover:text-white transition-colors duration-300 group"
@@ -326,37 +475,25 @@ export default function App() {
               <span className="group-hover:translate-y-1 transition-transform duration-300">↓</span>
               <span>SCROLL TO EXPLORE</span>
             </a>
-          </motion.div>
+          </div>
         </section>
 
 
         {/* 01 — ABOUT SECTION (Refined Split Typography Layout) */}
         <section id="about" className="space-y-12 pt-8 scroll-mt-28">
-          <div className="flex items-center gap-4">
+          <div className="section-header flex items-center gap-4">
             <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase">01 — ABOUT</span>
             <div className="h-[1px] w-16 bg-neutral-800"></div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             {/* Left Big Impact Heading with 3D Kinetic Cursor Magnet */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-6"
-            >
+            <div className="about-heading lg:col-span-6">
               <KineticHeading />
-            </motion.div>
+            </div>
 
             {/* Right Detailed Narrative Paragraphs & Resume Pill */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-6 space-y-6"
-            >
+            <div className="about-body lg:col-span-6 space-y-6">
               {/* Radial Target Dot Indicator */}
               <div className="w-7 h-7 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-6">
                 <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
@@ -371,7 +508,7 @@ export default function App() {
               </p>
 
               {/* Resume CTA Button with Glowing Ambient Glow */}
-              <div className="pt-4">
+              <div className="about-resume-btn pt-4">
                 <a
                   href="/resume.pdf"
                   target="_blank"
@@ -384,26 +521,26 @@ export default function App() {
                   <ArrowUpRight className="relative z-10 w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* EXPERIENCE SECTION — Minimalist Split Layout (Medsathi Real-World Software) */}
         <section id="experience" className="space-y-12 pt-8 scroll-mt-28">
-          <div className="flex items-center gap-4">
+          <div className="section-header flex items-center gap-4">
             <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase">02 — EXPERIENCE</span>
             <div className="h-[1px] w-16 bg-neutral-800"></div>
           </div>
 
-          <div className="space-y-12 border-t border-neutral-900 pt-8">
+          <div className="experience-timeline-container relative pl-4 sm:pl-6 border-l border-neutral-900/60 pt-4 space-y-12">
+            {/* Scroll-Triggered Animated Fill Line */}
+            <div className="absolute top-0 left-[-1px] w-[2px] bg-gradient-to-b from-indigo-500 via-purple-500 to-emerald-500 origin-top experience-line-fill" style={{ height: "0%" }}></div>
+
             {/* Medsathi Primary Role */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
-            >
+            <div className="experience-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative pl-4 sm:pl-8 group">
+              {/* Vertical Timeline Node Dot */}
+              <div className="absolute -left-[21px] sm:-left-[29px] top-2 w-3 h-3 rounded-full bg-neutral-950 border-2 border-indigo-500 group-hover:scale-125 transition-transform duration-300"></div>
+
               {/* Left Column: Organization & Dates */}
               <div className="lg:col-span-4 space-y-1">
                 <h3 className="text-base font-semibold text-white">Freelance Fullstack Developer</h3>
@@ -429,26 +566,20 @@ export default function App() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* 03 — EDUCATION SECTION */}
         <section id="education" className="space-y-12 pt-8 scroll-mt-28">
-          <div className="flex items-center gap-4">
+          <div className="section-header flex items-center gap-4">
             <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase">03 — EDUCATION</span>
             <div className="h-[1px] w-16 bg-neutral-800"></div>
           </div>
 
           <div className="space-y-10 border-t border-neutral-900 pt-8">
             {/* MCA Degree */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
-            >
+            <div className="education-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-start p-4 hover:bg-neutral-900/30 rounded-xl transition-colors duration-300">
               <div className="lg:col-span-4 space-y-1">
                 <h3 className="text-base font-semibold text-white">Master of Computer Applications (MCA)</h3>
                 <p className="text-xs font-mono text-neutral-500">Brainware University</p>
@@ -459,16 +590,10 @@ export default function App() {
                   Advanced studies in distributed systems, web architectures, enterprise database optimizations, algorithms, and cloud computing.
                 </p>
               </div>
-            </motion.div>
+            </div>
 
             {/* BCA Degree */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-6 border-t border-neutral-900/60"
-            >
+            <div className="education-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-6 border-t border-neutral-900/60 p-4 hover:bg-neutral-900/30 rounded-xl transition-colors duration-300">
               <div className="lg:col-span-4 space-y-1">
                 <h3 className="text-base font-semibold text-white">Bachelor of Computer Applications (BCA)</h3>
                 <p className="text-xs font-mono text-neutral-500">Brainware University</p>
@@ -479,13 +604,13 @@ export default function App() {
                   Core fundamentals in software engineering, object-oriented programming, data structures, relational database management, and fullstack web application development.
                 </p>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
         
         {/* 05 — SELECTED PROJECTS & SYSTEMS */}
         <section id="work" className="space-y-12 pt-8 scroll-mt-24">
-          <div className="flex items-center gap-4">
+          <div className="section-header flex items-center gap-4">
             <span className="text-xs font-mono tracking-widest text-neutral-500 uppercase">05 — SELECTED WORK</span>
             <div className="h-[1px] w-16 bg-neutral-800"></div>
           </div>
@@ -496,18 +621,14 @@ export default function App() {
             </h2>
           </div>
 
-          <div className="space-y-12">
+          <div className="work-timeline-container relative pl-4 sm:pl-6 border-l border-neutral-900/60 pt-4 space-y-12">
+            {/* Scroll-Triggered Animated Fill Line */}
+            <div className="absolute top-0 left-[-1px] w-[2px] bg-gradient-to-b from-emerald-500 via-sky-500 to-indigo-500 origin-top work-line-fill" style={{ height: "0%" }}></div>
             
             {/* Project 01 — Medsathi Pharmacy Suite */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="relative pl-8 sm:pl-12 border-l border-indigo-500/40 space-y-6 group"
-            >
+            <div className="project-card relative pl-2 sm:pl-8 space-y-6 group">
               {/* Vertical Timeline Indicator Node */}
-              <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-accent-indigo shadow-[0_0_12px_rgba(99,102,241,0.8)]"></div>
+              <div className="absolute -left-[21px] sm:-left-[29px] top-2 w-3 h-3 rounded-full bg-neutral-950 border-2 border-indigo-500 group-hover:scale-125 transition-transform duration-300"></div>
 
               {/* Header Badges & Links */}
               <div className="flex items-start justify-between gap-4">
@@ -573,19 +694,13 @@ export default function App() {
                   <div className="text-[10px] font-mono text-neutral-500 tracking-wider uppercase">DATA LOSS</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
 
             {/* Project 02 — Studium AI Academic Copilot */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="relative pl-8 sm:pl-12 border-l border-emerald-500/40 space-y-6 group pt-8"
-            >
+            <div className="project-card relative pl-2 sm:pl-8 space-y-6 group">
               {/* Vertical Timeline Indicator Node */}
-              <div className="absolute -left-[5px] top-8 w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]"></div>
+              <div className="absolute -left-[21px] sm:-left-[29px] top-2 w-3 h-3 rounded-full bg-neutral-950 border-2 border-emerald-400 group-hover:scale-125 transition-transform duration-300"></div>
 
               {/* Header Badges & Info */}
               <div className="flex items-start justify-between gap-4">
@@ -640,19 +755,13 @@ export default function App() {
                   <div className="text-[10px] font-mono text-neutral-500 tracking-wider uppercase">QUIZ GENERATION</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
 
             {/* Project 03 — UniRoomies Student Accommodation */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="relative pl-8 sm:pl-12 border-l border-sky-500/40 space-y-6 group pt-8"
-            >
+            <div className="project-card relative pl-2 sm:pl-8 space-y-6 group">
               {/* Vertical Timeline Indicator Node */}
-              <div className="absolute -left-[5px] top-8 w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)]"></div>
+              <div className="absolute -left-[21px] sm:-left-[29px] top-2 w-3 h-3 rounded-full bg-neutral-950 border-2 border-sky-400 group-hover:scale-125 transition-transform duration-300"></div>
 
               {/* Header Badges & Info */}
               <div className="flex items-start justify-between gap-4">
@@ -707,19 +816,13 @@ export default function App() {
                   <div className="text-[10px] font-mono text-neutral-500 tracking-wider uppercase">MOBILE FIRST</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
 
             {/* Project 04 — InterviewAI (Building) */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative pl-8 sm:pl-12 border-l border-amber-500/40 space-y-6 group pt-8"
-            >
+            <div className="project-card relative pl-2 sm:pl-8 space-y-6 group">
               {/* Vertical Timeline Indicator Node */}
-              <div className="absolute -left-[5px] top-8 w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.8)]"></div>
+              <div className="absolute -left-[21px] sm:-left-[29px] top-2 w-3 h-3 rounded-full bg-neutral-950 border-2 border-amber-400 group-hover:scale-125 transition-transform duration-300"></div>
 
               {/* Header Badges & Info */}
               <div className="flex items-start justify-between gap-4">
@@ -775,7 +878,7 @@ export default function App() {
                   <div className="text-[10px] font-mono text-neutral-500 tracking-wider uppercase">TRANSCRIPT SCORING</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
           </div>
         </section>
@@ -787,7 +890,7 @@ export default function App() {
 
         {/* FOOTER CALL TO ACTION */}
         <section id="contact" className="pt-20 pb-16 text-center space-y-10">
-          <div className="space-y-8 max-w-2xl mx-auto">
+          <div className="footer-reveal space-y-8 max-w-2xl mx-auto">
             {/* Top Brand Name Signature */}
             <div className="space-y-1">
               <span className="font-mono text-xl sm:text-2xl font-light tracking-widest text-white uppercase">
