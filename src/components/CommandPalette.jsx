@@ -126,11 +126,11 @@ export default function CommandPalette({ isOpen, onClose }) {
     {
       id: 'linkedin',
       title: 'Open LinkedIn Profile',
-      subtitle: 'linkedin.com/in/defidecoder13',
+      subtitle: 'linkedin.com/in/subham-santra001',
       category: 'SOCIALS',
       icon: <Linkedin className="w-4 h-4 text-blue-400" />,
       action: () => {
-        window.open('https://linkedin.com/in/defidecoder13', '_blank');
+        window.open('https://www.linkedin.com/in/subham-santra001/', '_blank');
         onClose();
       }
     }

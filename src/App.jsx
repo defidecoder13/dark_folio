@@ -415,7 +415,7 @@ export default function App() {
 
               {/* LinkedIn */}
               <a
-                href="https://linkedin.com/in/defidecoder13"
+                href="https://www.linkedin.com/in/subham-santra001/"
                 target="_blank"
                 rel="noreferrer"
                 className="hero-social-btn p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-[#0A66C2] hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/10 hover:shadow-[0_0_18px_rgba(10,102,194,0.35)] transition-[background-color,border-color,color,box-shadow,transform] duration-300 transform hover:-translate-y-1"
@@ -901,7 +901,7 @@ export default function App() {
             {/* Social Icons Row */}
             <div className="flex items-center justify-center gap-6 text-neutral-500 pt-2">
               <a 
-                href="https://linkedin.com/in/defidecoder13" 
+                href="https://www.linkedin.com/in/subham-santra001/" 
                 target="_blank" 
                 rel="noreferrer"
                 className="hover:text-white transition-colors duration-300"
