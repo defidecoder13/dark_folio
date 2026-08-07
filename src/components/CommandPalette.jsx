@@ -115,22 +115,22 @@ export default function CommandPalette({ isOpen, onClose }) {
     {
       id: 'github',
       title: 'Open GitHub Profile',
-      subtitle: 'github.com',
+      subtitle: 'github.com/defidecoder13',
       category: 'SOCIALS',
       icon: <Github className="w-4 h-4 text-neutral-300" />,
       action: () => {
-        window.open('https://github.com', '_blank');
+        window.open('https://github.com/defidecoder13', '_blank');
         onClose();
       }
     },
     {
       id: 'linkedin',
       title: 'Open LinkedIn Profile',
-      subtitle: 'linkedin.com',
+      subtitle: 'linkedin.com/in/defidecoder13',
       category: 'SOCIALS',
       icon: <Linkedin className="w-4 h-4 text-blue-400" />,
       action: () => {
-        window.open('https://linkedin.com', '_blank');
+        window.open('https://linkedin.com/in/defidecoder13', '_blank');
         onClose();
       }
     }
