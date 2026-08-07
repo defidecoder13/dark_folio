@@ -437,7 +437,7 @@ export default function App() {
 
               {/* Email */}
               <a
-                href="mailto:defidecoder13@gmail.com"
+                href="mailto:subhamsantra001@gmail.com"
                 className="hero-social-btn p-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/10 hover:shadow-[0_0_18px_rgba(52,211,153,0.35)] transition-[background-color,border-color,color,box-shadow,transform] duration-300 transform hover:-translate-y-1"
                 title="Email"
               >
@@ -928,7 +928,7 @@ export default function App() {
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
               <a 
-                href="mailto:defidecoder13@gmail.com" 
+                href="mailto:subhamsantra001@gmail.com" 
                 className="hover:text-white transition-colors duration-300"
                 title="Email"
               >
